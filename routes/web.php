@@ -11,7 +11,25 @@
 |
 */
 
-Route::get('/', function () {
+// bind something into service container
+//app()->bind('example', function (){
+//    return new \App\Example;
+//});
+
+// singleton, only allowed one instance
+// laravel auto resolution for you!
+//app()->singleton('example', function (){
+//    return new \App\Example;
+//});
+
+Route::get('/', function (\App\Services\Twitter $twitter) {
+//Route::get('/', function (\App\Repositories\UserRepository $users) {
+
+    // will check in service container first then check is there any class path
+//    dd(app('example'), app('example'));
+//    dd(app('App\Example'));
+//    dd($twitter);
+//    dd($users);
     return view('welcome');
 });
 
@@ -27,7 +45,9 @@ Route::get('/', function () {
  * PATCH and PUT only slightly difference
  */
 
-Route::resource('projects', 'ProjectController');
+//Route::resource('projects', 'ProjectController');
+Route::resource('projects', 'ProjectController')->middleware('can:update,project'); // the 'project' follow the route model binding {project}
+
 //Route::get('/projects', 'ProjectController@index');
 //Route::get('/projects/create', 'ProjectController@create');
 //Route::get('/projects/{project}', 'ProjectController@show');
@@ -35,3 +55,12 @@ Route::resource('projects', 'ProjectController');
 //Route::get('/projects/{project}/edit', 'ProjectController@edit');
 //Route::patch('/projects/{project}', 'ProjectController@update');
 //Route::delete('/projects/{project}', 'ProjectController@destroy');
+
+Route::post('/projects/{project}/tasks', 'ProjectTaskController@store');
+Route::patch('/tasks/{task}', 'ProjectTaskController@update');
+Route::post('/completed-task/{task}', 'CompletedTaskController@store');
+Route::delete('/completed-task/{task}', 'CompletedTaskController@destroy');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

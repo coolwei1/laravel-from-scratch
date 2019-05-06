@@ -10,14 +10,14 @@
             <label class="label" for="title">Title</label>
         </div>
         <div class="control">
-            <input type="text" class="input" name="title" placeholder="Title" value="{{ $project->title }}">
+            <input type="text" class="input" name="title" placeholder="Title" value="{{ $project->title }}" required>
         </div>
 
         <div class="field">
             <label class="label" for="description">Description</label>
         </div>
         <div class="control">
-            <textarea name="description" class="textarea">{{ $project->description }}</textarea>
+            <textarea name="description" class="textarea" required>{{ $project->description }}</textarea>
         </div>
 
         <div class="field">
@@ -34,5 +34,7 @@
                 <button type="submit" class="button">Delete Project</button>
             </div>
         </div>
+
+        @include('errors')
     </form>
 @endsection

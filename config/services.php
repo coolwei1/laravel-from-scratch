@@ -44,4 +44,9 @@ return [
         ],
     ],
 
+    'twitter' => [
+        'public' => env('TWITTER_PUBLIC'),
+        'private' => env('TWITTER_PRIVATE'),
+    ],
+
 ];
