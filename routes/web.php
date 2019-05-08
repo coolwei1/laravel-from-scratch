@@ -22,16 +22,20 @@
 //    return new \App\Example;
 //});
 
-Route::get('/', function (\App\Services\Twitter $twitter) {
-//Route::get('/', function (\App\Repositories\UserRepository $users) {
+//Route::get('/', function (\App\Services\Twitter $twitter) {
+////Route::get('/', function (\App\Repositories\UserRepository $users) {
+//
+//    // will check in service container first then check is there any class path
+////    dd(app('example'), app('example'));
+////    dd(app('App\Example'));
+////    dd($twitter);
+////    dd($users);
+//    return view('welcome');
+//});
 
-    // will check in service container first then check is there any class path
-//    dd(app('example'), app('example'));
-//    dd(app('App\Example'));
-//    dd($twitter);
-//    dd($users);
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 /*
  * GET /projects (index)

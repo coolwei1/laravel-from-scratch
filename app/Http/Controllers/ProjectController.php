@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ProjectCreated;
 use Illuminate\Http\Request;
 use App\Project;
+use Mail;
 
 class ProjectController extends Controller
 {
@@ -26,7 +28,18 @@ class ProjectController extends Controller
 //        auth()->check();
 //        auth()->guest();
 
-        $projects = Project::where('owner_id', auth()->id())->get();
+//        $projects = Project::where('owner_id', auth()->id())->get(); // not readable
+//        $projects = Project::where('owner_id', auth()->id())->take(1)->get();
+
+        $projects = auth()->user()->projects;
+
+        // to perform some very time consuming database operation that are not required update everytime
+        // can cache it for faster response
+//        cache()->rememberForever('stats', function (){
+//            return ['lesson' => 3000, 'hours' => 50];
+//        });
+//
+//        dump($projects);
 
         return view('projects.index', compact('projects'));
     }
@@ -74,15 +87,26 @@ class ProjectController extends Controller
 //            'description' => request('description')
 //        ]);
 
-        $validated = request()->validate([
-           'title' => ['required', 'min:3', 'max:255'],
-           'description' => ['required', 'min:3']
-        ]);
+//        $validated = request()->validate([
+//           'title' => ['required', 'min:3', 'max:255'],
+//           'description' => ['required', 'min:3']
+//        ]);
+        $validated = $this->validateProject();
 
         $validated['owner_id'] = auth()->id();
 
-        Project::create($validated);
+        $project = Project::create($validated);
+//        Project::create($validated);
+
+//        event(new ProjectCreated($project));
+
+//        dump($project);
+
 //        Project::create($validated + ['owner_id' => auth()->id()]);
+
+//        Mail::to($project->owner->email)->send(
+//            new ProjectCreated($project)
+//        );
 
         return redirect('/projects');
     }
@@ -99,8 +123,14 @@ class ProjectController extends Controller
 //        $project->save();
 
 //        $this->authorize('update', $project);
+//        $validated = request()->validate([
+//            'title' => ['required', 'min:3', 'max:255'],
+//            'description' => ['required', 'min:3']
+//        ]);
+//
+//        $project->update($validated);
 
-        $project->update(request(['title', 'description']));
+        $project->update($this->validateProject());
 
         return redirect('/projects');
     }
@@ -113,5 +143,12 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect('/projects');
+    }
+
+    public function validateProject(){
+        return request()->validate([
+            'title' => ['required', 'min:3', 'max:255'],
+            'description' => ['required', 'min:3']
+        ]);
     }
 }
